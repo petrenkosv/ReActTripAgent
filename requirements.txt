@@ -5,3 +5,5 @@ autogen_core
 pydantic
 typing_extensions
 requests
+fastapi
+uvicorn

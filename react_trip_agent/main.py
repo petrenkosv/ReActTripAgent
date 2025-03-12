@@ -1,8 +1,9 @@
 import logging
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 from autogen_agentchat.conditions import TextMentionTermination
 from autogen_agentchat.teams import RoundRobinGroupChat
-from autogen_agentchat.ui import Console
 from aiogram import Bot
 
 from .agent import weather_agent, summary_agent, sights_agent, finance_agent
@@ -10,6 +11,14 @@ from .config import TELEGRAM_BOT_TOKEN
 
 # Initialize bot
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
+
+# Initialize FastAPI app
+app = FastAPI()
+
+class TaskRequest(BaseModel):
+    task: str
+    user_id: int
+    console_mode: bool = False
 
 async def send_telegram_message(user_id, message):
     """
@@ -25,11 +34,7 @@ async def send_telegram_message(user_id, message):
     except Exception as e:
         logging.error(f"Failed to send message to user {user_id}: {e}")
 
-async def main(
-    task="Plan a trip to Astana 5 days. I`ll have meeting from 9am to 16pm every day exept last",
-    user_id=None,
-    console_mode=False,
-):
+async def main(task: str, user_id: int, console_mode: bool):
     """
     Run the agent chat and send the final message to the user via Telegram if user_id is provided.
 
@@ -69,9 +74,15 @@ async def main(
         )
     )
 
-if __name__ == "__main__":
-    import asyncio
+@app.post("/execute_task")
+async def execute_task(request: TaskRequest):
+    try:
+        result = await main(request.task, request.user_id, request.console_mode)
+        return {"status": "success", "result": result}
+    except Exception as e:
+        logging.error(f"Error executing task: {e}")
+        raise HTTPException(status_code=500, detail="Error executing task")
 
-    # Example usage: Replace 123456789 with the actual Telegram user ID
-    asyncio.run(main(user_id=218638445))
-    # asyncio.run(main(user_id=460512882))
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
