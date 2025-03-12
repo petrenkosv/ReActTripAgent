@@ -1,0 +1,10 @@
+import os
+
+OPEN_WHEATHER_KEY = os.getenv("OPEN_WHEATHER_KEY")
+GEOCODING_URL = os.getenv("GEOCODING_URL")
+WHEATHER_BASE_URL = os.getenv("WHEATHER_BASE_URL")
+GEOAPIFY_API_KEY = os.getenv(
+    "GEOAPIFY_API_KEY", "5d31d0be2a004ea2922a48c8ebe09708"
+)  # Default key from the example
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
