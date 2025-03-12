@@ -1,0 +1,7 @@
+aiogram
+autogen_agentchat
+autogen_ext
+autogen_core
+pydantic
+typing_extensions
+requests
