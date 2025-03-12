@@ -1,4 +1,5 @@
 from autogen_ext.models.openai import OpenAIChatCompletionClient
+from .config import GB_AI_MODEL, GB_AI_BASE_URL, GB_AI_API_KEY
 
 
 model_info = {
@@ -9,8 +10,8 @@ model_info = {
 }
 
 base_model = OpenAIChatCompletionClient(
-    model="openai.gpt-4o",
-    base_url="https://llm.glowbyteconsulting.com/api/",
-    api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgyNjJkM2MxLWI0NDktNDhmYi1iNjk1LWI1ZmNiNDBiMjM5ZiIsImV4cCI6MTc0MjI3ODc1N30.LGPZCl98O783Pgv7lfQI_TmolVCpXjFr9mVWiTZivkU",
+    model=GB_AI_MODEL,
+    base_url=GB_AI_BASE_URL,
+    api_key=GB_AI_API_KEY,
     model_info=model_info,
 )
