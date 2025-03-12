@@ -8,3 +8,6 @@ GEOAPIFY_API_KEY = os.getenv(
 )  # Default key from the example
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 EXCHANGE_RATE_API_KEY = os.getenv("EXCHANGE_RATE_API_KEY")
+GB_AI_API_KEY = os.getenv("GB_AI_API_KEY")
+GB_AI_BASE_URL = os.getenv("GB_AI_BASE_URL")
+GB_AI_MODEL = os.getenv("GB_AI_MODEL")
