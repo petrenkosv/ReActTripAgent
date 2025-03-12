@@ -11,7 +11,6 @@ from .config import TELEGRAM_BOT_TOKEN
 # Initialize bot
 bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
-
 async def send_telegram_message(user_id, message):
     """
     Send a message to a Telegram user by user ID.
@@ -22,11 +21,9 @@ async def send_telegram_message(user_id, message):
     """
     try:
         await bot.send_message(chat_id=user_id, text=message)
-        # await bot.send_message(chat_id=user_id, text=message)
         logging.info(f"Message sent to user {user_id}")
     except Exception as e:
         logging.error(f"Failed to send message to user {user_id}: {e}")
-
 
 async def main(
     task="Plan a trip to Astana 5 days. I`ll have meeting from 9am to 16pm every day exept last",
@@ -39,16 +36,22 @@ async def main(
     Args:
         task (str): The task description for the agents
         user_id (int, optional): Telegram user ID to send the final message to
+        console_mode (bool, optional): If True, run in console mode
     """
+    # Define termination condition based on text mention
     termination = TextMentionTermination("TERMINATE")
+    
+    # Initialize group chat with agents and termination condition
     group_chat = RoundRobinGroupChat(
         [weather_agent, sights_agent, finance_agent, summary_agent],
         termination_condition=termination,
     )
+    
     if not console_mode:
+        # Run the group chat with the provided task
         result = await group_chat.run(task=task)
         final_message = result.messages[-1].content.replace("TERMINATE", "")
-
+        
         # Send the final message to the user via Telegram if user_id is provided
         if user_id:
             await send_telegram_message(user_id, final_message)
@@ -56,15 +59,15 @@ async def main(
         else:
             logging.info("No user_id provided, skipping Telegram message")
             print(final_message)
-
+        
         return final_message
 
+    # Run the group chat in console mode
     await Console(
         group_chat.run_stream(
             task="Plan a trip to Berlin 3 days. I`ll have meeting from 9am to 16pm every day exept last"
         )
     )
-
 
 if __name__ == "__main__":
     import asyncio
